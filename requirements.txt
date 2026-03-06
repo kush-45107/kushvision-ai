@@ -10,7 +10,7 @@ python-docx
 docx2txt
 pandas
 pillow
-sentence-transformer
+sentence-transformers
 faiss-cpu
 google-search-results
 gunicorn
