@@ -1,0 +1,16 @@
+dotenv
+flask
+groq
+langchain
+langchain-community
+langchain-text-splitters
+langchain-huggingface
+pypdf
+python-docx 
+docx2txt
+pandas
+pillow
+sentence-transformer
+faiss-cpu
+serpapi
+gunicorn
