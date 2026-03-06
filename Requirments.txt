@@ -12,3 +12,4 @@ pandas
 pillow
 sentence-transformer
 faiss-cpu
+gunicorn
