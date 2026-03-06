@@ -12,4 +12,5 @@ pandas
 pillow
 sentence-transformer
 faiss-cpu
+google-search-results
 gunicorn
