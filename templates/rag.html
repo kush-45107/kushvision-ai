@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='rag.css') }}">
+    <title>KushVision File AI</title>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>KushVision AI</h1>
+
+        <div class="box">    
+
+            <!-- File Upload -->
+            <form method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".pdf,.txt,.docx,.csv,.png,.jpg,.jpeg">
+                <button type="submit">Upload File</button>
+            </form>
+
+            <!-- Questions -->
+            <form method="POST">
+                <textarea id="user_input" name="user_input" placeholder="Ask related to file..."></textarea>
+                <button type="button" onclick="startVoice('user_input')">Speak</button>
+                <button type="submit">Ask</button>
+            </form>
+
+            {% if reply %}
+            <div class="chat">
+                <b>AI:</b> {{ reply }}
+            </div>
+            {% endif %}
+
+            <a class="back-link" href="/dashboard/{{username}}">← Back</a>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Voice Input
+        function startVoice(inputId) {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Use Chrome browser");
+                return;
+            }
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = "en-IN";
+            recognition.start();
+            recognition.onresult = function(event) {
+                document.getElementById(inputId).value =
+                    event.results[0][0].transcript;
+            };
+        }
+
+        // Speak text
+        function speakText(text) {
+            if (!text) return;
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.rate = 0.95;
+            speech.pitch = 1.6;
+            speech.volume = 1;
+            speech.lang = "en-US";
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(speech);
+        }
+
+        window.onbeforeunload = function(){
+            window.speechSynthesis.cancel();
+        };
+
+        function stopVoice(){
+            window.speechSynthesis.cancel();
+        }
+    </script>
+
+    {% if reply %}
+    <script>
+        speakText(`{{ reply }}`);
+    </script>
+    {% endif %}
+
+    <!-- Click Sound -->
+    <audio id="clickSound" preload="auto">
+        <source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sound = document.getElementById("clickSound");
+
+            function playClick() {
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            }
+
+            document.querySelectorAll("button").forEach(btn => {
+                btn.addEventListener("click", function(e) {
+                    if (btn.type === "submit") {
+                        e.preventDefault();
+                        playClick();
+                        setTimeout(() => {
+                            btn.closest("form").submit();
+                        }, 120);
+                    } else {
+                        playClick();
+                    }
+                });
+            });
+
+            document.querySelectorAll("a").forEach(link => {
+                link.addEventListener("click", function(e) {
+                    const href = this.getAttribute("href");
+                    if (!href || href.startsWith("#")) return;
+                    e.preventDefault();
+                    playClick();
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 120);
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

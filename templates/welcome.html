@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KushVision AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+</head>
+<body>
+    <div class="box">
+        <h1>Welcome to KushVision AI 🤖</h1>
+        <form method="POST">
+            <input type="text" name="name" placeholder="Enter your name" required>
+            <br>
+            <button type="submit">Enter</button>
+        </form>
+    </div>
+
+    <div class="credit">
+        Devloped by • Kushagra Srivastawa
+    </div>
+
+    <audio id="clickSound" preload="auto">
+        <source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sound = document.getElementById("clickSound");            
+            document.body.addEventListener("click", function() {
+                sound.play().then(() => {
+                    sound.pause();
+                    sound.currentTime = 0;
+                }).catch(() => {});
+            }, { once: true });            
+            document.querySelectorAll("button, a").forEach(el => {
+                el.addEventListener("click", function() {
+                    sound.pause();
+                    sound.currentTime = 0;
+                    sound.play();
+                });
+            });
+        });
+    </script>
+
+    <script>
+        function speakWelcome() {
+            const msg = new SpeechSynthesisUtterance("Welcome to KushVision AI");
+            msg.rate = 1;
+            msg.pitch = 1;
+            msg.volume = 1;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(msg);
+        }
+        document.body.addEventListener("click", function() {
+            speakWelcome();
+        }, { once: true });
+    </script>
+</body>
+</html>

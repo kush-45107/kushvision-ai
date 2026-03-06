@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KushVision Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+    <div class="box">
+        <h1>Hey {{name}} 👋</h1>
+        <h3>What you want to do?</h3>
+
+        <a href="/chat/{{name}}" class="btn">Chat with KushVision AI</a>
+        <a href="/rag/{{name}}" class="btn">Upload your File</a>
+        <a href="/image/{{name}}" class="btn">Generate Image</a>
+    </div>
+
+    <audio id="clickSound" preload="auto">
+        <source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sound = document.getElementById("clickSound");
+            function playClick() {
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            }
+
+            // Button sound
+            document.querySelectorAll("button").forEach(btn => {
+                btn.addEventListener("click", playClick);
+            });
+
+            // Link sound
+            document.querySelectorAll("a").forEach(link => {
+                link.addEventListener("click", function(e) {
+                    const href = this.getAttribute("href");
+                    if (!href || href.startsWith("#")) return;
+                    e.preventDefault();
+                    playClick();
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 150);
+                });
+            });
+        });
+    </script>
+    <script>
+
+function speakText(text){
+
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.rate = 1;
+    speech.pitch = 0.6;
+    speech.volume = 2;
+
+    function setFemaleVoice(){
+        const voices = window.speechSynthesis.getVoices();
+
+        const femaleVoice = voices.find(v =>
+            v.name.includes("Zira") ||
+            v.name.includes("Samantha") ||
+            v.name.includes("Google UK English Female") ||
+            v.name.includes("Karen")
+        );
+
+        if(femaleVoice){
+            speech.voice = femaleVoice;
+        }
+
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(speech);
+    }
+
+    if(speechSynthesis.getVoices().length === 0){
+        speechSynthesis.onvoiceschanged = setFemaleVoice;
+    } else {
+        setFemaleVoice();
+    }
+}
+
+
+// Speak only first time after login
+window.onload = function(){
+
+    if(!sessionStorage.getItem("welcomed")){
+        speakText("Hey {{name}}, what you want to do");
+        sessionStorage.setItem("welcomed", "true");
+    }
+
+};
+
+</script>
+</body>
+</html>
