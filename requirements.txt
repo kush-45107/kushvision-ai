@@ -13,4 +13,3 @@ pillow
 sentence-transformers
 faiss-cpu
 google-search-results
-gunicorn
