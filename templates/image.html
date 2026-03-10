@@ -1,122 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='image.css') }}">
-    <title>KushVision Image AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KushVision Image AI</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='image.css') }}">
+
 </head>
+
 <body>
-    <h1>KushVision AI</h1>
-    <div class="box">
-        <form method="POST">
-            <textarea id="image_prompt" name="image_prompt" placeholder="Describe your image..."></textarea>
-            <br>
-            <button type="button" onclick="startVoice('image_prompt')">Speak</button>
-            <button type="submit">Generate</button>
-        </form>
 
-        {% if image %}
-            <br>
-            <img src="{{ image }}?v={{ range(1,1000)|random }}" width="400">
+<div class="container">
 
-            <br><br>
+<h1>KushVision AI</h1>
 
-            <a href="{{ image }}" download="KushVision_AI_Image.png" class="download-link">
-                <button type="button" class="download-btn">Download Image</button>
-            </a>
-        {% endif %}
+<div class="box">
 
-        <br>
-        <a class="back-link" href="/dashboard/{{username}}">← Back</a>
-    </div>
+<form method="POST">
 
-    <script>
-        // Voice Input
-        function startVoice(inputId) {
-            if (!('webkitSpeechRecognition' in window)) {
-                alert("Use Chrome browser");
-                return;
-            }
-            const recognition = new webkitSpeechRecognition();
-            recognition.lang = "en-IN";
-            recognition.start();
-            recognition.onresult = function(event) {
-                document.getElementById(inputId).value =
-                    event.results[0][0].transcript;
-            };
-        }
+<textarea id="image_prompt" name="image_prompt" placeholder="Describe your image..."></textarea>
 
-        // Speak
-        function speakText(text) {
-            if (!text) return;
-            const speech = new SpeechSynthesisUtterance(text);
-            speech.rate = 1;
-            speech.pitch = 1;
-            speech.volume = 1;
-            window.speechSynthesis.cancel();
-            window.speechSynthesis.speak(speech);
-        }
+<div class="buttons">
+<button type="button" onclick="startVoice('image_prompt')">Speak</button>
+<button type="submit">Generate</button>
+</div>
 
-        // Stop speech when page close
-        window.onbeforeunload = function() {
-            window.speechSynthesis.cancel();
-        };
+</form>
 
-        // Stop speech when back button click
-        function stopVoice() {
-            window.speechSynthesis.cancel();
-        }
-    </script>
+{% if image %}
 
-    {% if image %}
-    <script>
-        speakText("Image generated successfully");
-    </script>
-    {% endif %}
+<div class="image-box">
 
-    <audio id="clickSound" preload="auto">
-        <source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
-    </audio>
+<img src="{{ image }}?v={{ range(1,1000)|random }}">
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const sound = document.getElementById("clickSound");
-            function playClick() {
-                sound.pause();
-                sound.currentTime = 0;
-                sound.play().catch(() => {});
-            }
+<a href="{{ image }}" download="KushVision_AI_Image.png" class="download-link">
+<button type="button" class="download-btn">Download Image</button>
+</a>
 
-            // Buttons
-            document.querySelectorAll("button").forEach(btn => {
-                btn.addEventListener("click", function(e) {
-                    if (btn.type === "submit") {
-                        e.preventDefault(); 
-                        playClick();
-                        setTimeout(() => {
-                            btn.closest("form").submit();
-                        }, 120);
-                    } else {
-                        playClick();
-                    }
-                });
-            });
+</div>
 
-            // Links
-            document.querySelectorAll("a:not(.download-link)").forEach(link => {
-                link.addEventListener("click", function(e) {
-                    const href = this.getAttribute("href");
-                    if (!href || href.startsWith("#")) {
-                        return;
-                    }
-                    e.preventDefault();
-                    playClick();
-                    setTimeout(() => {
-                        window.location.href = href;
-                    }, 120);
-                });
-            });
-        });
-    </script>
+{% endif %}
+
+<a class="back-link" href="/dashboard/{{username}}">← Back</a>
+
+</div>
+
+</div>
+
+<script>
+
+function startVoice(id){
+if(!('webkitSpeechRecognition' in window)){
+alert("Use Chrome browser");
+return;
+}
+
+const recognition = new webkitSpeechRecognition();
+recognition.lang="en-IN";
+recognition.start();
+
+recognition.onresult=function(event){
+document.getElementById(id).value =
+event.results[0][0].transcript;
+};
+
+}
+
+</script>
+
+<audio id="clickSound" preload="auto">
+<source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
+</audio>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const sound = document.getElementById("clickSound");
+
+function playClick(){
+sound.pause();
+sound.currentTime = 0;
+sound.play().catch(()=>{});
+}
+
+document.querySelectorAll("button").forEach(btn=>{
+btn.addEventListener("click",function(e){
+
+if(btn.type==="submit"){
+e.preventDefault();
+playClick();
+
+setTimeout(()=>{
+btn.closest("form").submit();
+},120);
+
+}else{
+playClick();
+}
+
+});
+});
+
+document.querySelectorAll("a:not(.download-link)").forEach(link=>{
+link.addEventListener("click",function(e){
+
+const href=this.getAttribute("href");
+
+if(!href || href.startsWith("#")) return;
+
+e.preventDefault();
+playClick();
+
+setTimeout(()=>{
+window.location.href=href;
+},120);
+
+});
+
+});
+
+});
+
+</script>
+
 </body>
 </html>
