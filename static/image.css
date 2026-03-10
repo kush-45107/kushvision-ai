@@ -95,3 +95,30 @@ text-decoration:none;
 .download-btn:active {
     transform: scale(0.95);
 }
+
+@media (max-width:768px){
+
+body{
+margin-top:40px;
+padding:10px;
+}
+
+.box{
+width:92%;
+padding:25px;
+}
+
+h1{
+font-size:28px;
+}
+
+textarea{
+height:100px;
+}
+
+button{
+width:100%;
+margin-top:10px;
+}
+
+}
