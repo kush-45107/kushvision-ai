@@ -1,114 +1,144 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
-    <title>KushVision Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KushVision Chat</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+
 </head>
+
 <body>
-    <h1>KushVision AI</h1>
-    <div class="box">
-        <form method="POST">
-            <textarea id="user_input" name="user_input" placeholder="Ask anything..."></textarea>
-            <br>
-            <button type="button" onclick="startVoice('user_input')">Speak</button>
-            <button type="submit">Ask</button>
-        </form>
 
-        {% if reply %}
-        <div class="chat">
-            <b>AI:</b> {{ reply }}
-        </div>
-        {% endif %}
+<div class="container">
 
-        <a class="back-link" href="/dashboard/{{username}}">← Back</a>
-    </div>
+<h1>KushVision AI</h1>
 
-    <script>
-        // Voice Input
-        function startVoice(id) {
-            if (!('webkitSpeechRecognition' in window)) {
-                alert("Use Chrome browser");
-                return;
-            }
-            const recognition = new webkitSpeechRecognition();
-            recognition.lang = "en-IN";
-            recognition.start();
-            recognition.onresult = function(event) {
-                document.getElementById(id).value =
-                    event.results[0][0].transcript;
-            };
-        }
+<div class="box">
 
-        // Speak Function
-        function speakText(text) {
-            if (!text) return;
-            const speech = new SpeechSynthesisUtterance(text);
-            speech.rate = 1;
-            speech.pitch = 1;
-            speech.volume = 1;
-            window.speechSynthesis.cancel();
-            window.speechSynthesis.speak(speech);
-        }
+<form method="POST">
 
-        // Stop speech when page closes
-        window.onbeforeunload = function() {
-            window.speechSynthesis.cancel();
-        };
+<textarea id="user_input" name="user_input" placeholder="Ask anything..."></textarea>
 
-        // Stop speech manually
-        function stopVoice() {
-            window.speechSynthesis.cancel();
-        }
-    </script>
+<div class="buttons">
+<button type="button" onclick="startVoice('user_input')">Speak</button>
+<button type="submit">Ask</button>
+</div>
 
-    {% if reply %}
-    <script>
-        speakText(`{{ reply }}`);
-    </script>
-    {% endif %}
+</form>
 
-    <audio id="clickSound" preload="auto">
-        <source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
-    </audio>
+{% if reply %}
+<div class="chat">
+<b>AI:</b> {{ reply }}
+</div>
+{% endif %}
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const sound = document.getElementById("clickSound");
-            function playClick() {
-                sound.pause();
-                sound.currentTime = 0;
-                sound.play().catch(() => {});
-            }
+<a class="back-link" href="/dashboard/{{username}}">← Back</a>
 
-            // Buttons
-            document.querySelectorAll("button").forEach(btn => {
-                btn.addEventListener("click", function(e) {
-                    if (btn.type === "submit") {
-                        e.preventDefault();
-                        playClick();
-                        setTimeout(() => {
-                            btn.closest("form").submit();
-                        }, 120);
-                    } else {
-                        playClick();
-                    }
-                });
-            });
+</div>
 
-            // Links
-            document.querySelectorAll("a").forEach(link => {
-                link.addEventListener("click", function(e) {
-                    const href = this.getAttribute("href");
-                    if (!href || href.startsWith("#")) return;
-                    e.preventDefault();
-                    playClick();
-                    setTimeout(() => {
-                        window.location.href = href;
-                    }, 120);
-                });
-            });
-        });
-    </script>
+</div>
+
+
+<script>
+function startVoice(id) {
+if (!('webkitSpeechRecognition' in window)) {
+alert("Use Chrome browser");
+return;
+}
+
+const recognition = new webkitSpeechRecognition();
+recognition.lang = "en-IN";
+recognition.start();
+
+recognition.onresult = function(event) {
+document.getElementById(id).value =
+event.results[0][0].transcript;
+};
+}
+</script>
+
+
+<script>
+
+function speakText(text) {
+if (!text) return;
+
+const speech = new SpeechSynthesisUtterance(text);
+speech.rate = 1;
+speech.pitch = 1;
+speech.volume = 1;
+
+window.speechSynthesis.cancel();
+window.speechSynthesis.speak(speech);
+}
+
+window.onbeforeunload = function() {
+window.speechSynthesis.cancel();
+};
+
+</script>
+
+{% if reply %}
+<script>
+speakText(`{{ reply }}`);
+</script>
+{% endif %}
+
+<audio id="clickSound" preload="auto">
+<source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
+</audio>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const sound = document.getElementById("clickSound");
+
+function playClick(){
+sound.pause();
+sound.currentTime = 0;
+sound.play().catch(()=>{});
+}
+
+document.querySelectorAll("button").forEach(btn=>{
+btn.addEventListener("click",function(e){
+
+if(btn.type === "submit"){
+e.preventDefault();
+playClick();
+
+setTimeout(()=>{
+btn.closest("form").submit();
+},120);
+
+}else{
+playClick();
+}
+
+});
+});
+
+document.querySelectorAll("a").forEach(link=>{
+link.addEventListener("click",function(e){
+
+const href = this.getAttribute("href");
+
+if(!href || href.startsWith("#")) return;
+
+e.preventDefault();
+playClick();
+
+setTimeout(()=>{
+window.location.href = href;
+},120);
+
+});
+});
+
+});
+
+</script>
+
 </body>
 </html>
