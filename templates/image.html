@@ -1,128 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KushVision Image AI</title>
-
-<link rel="stylesheet" href="{{ url_for('static', filename='image.css') }}">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KushVision Image AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='image.css') }}">
 </head>
 
 <body>
+    <div class="container">
+        <h1>KushVision AI</h1>
+        <div class="box">
+            <form method="POST">
+                <textarea id="image_prompt" name="image_prompt" placeholder="Describe your image..."></textarea>
+                <div class="buttons">
+                    <button type="button" onclick="startVoice('image_prompt')">Speak</button>
+                    <button type="submit">Generate</button>
+                </div>
+            </form>
 
-<div class="container">
+            {% if image %}
+            <div class="image-box">
+                <img src="{{ image }}?v={{ range(1,1000)|random }}">
+                <a href="{{ image }}" download="KushVision_AI_Image.png" class="download-link">
+                    <button type="button" class="download-btn">
+                        Download Image
+                    </button>
+                </a>
+            </div>
+            {% endif %}
+            <a class="back-link" href="/dashboard/{{username}}">← Back</a>
+        </div>
+    </div>
 
-<h1>KushVision AI</h1>
+    <script>
+        function startVoice(id) {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Use Chrome browser");
+                return;
+            }
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = "en-IN";
+            recognition.start();
+            recognition.onresult = function (event) {
+                document.getElementById(id).value =
+                    event.results[0][0].transcript;
+            };
+        }
+    </script>
 
-<div class="box">
+    <audio id="clickSound" preload="auto">
+        <source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
+    </audio>
 
-<form method="POST">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sound = document.getElementById("clickSound");
+            function playClick() {
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(() => { });
+            }
+            document.querySelectorAll("button").forEach(btn => {
+                btn.addEventListener("click", function (e) {
+                    if (btn.type === "submit") {
+                        e.preventDefault();
+                        playClick();
+                        setTimeout(() => {
+                            btn.closest("form").submit();
+                        }, 120);
+                    } else {
+                        playClick();
 
-<textarea id="image_prompt" name="image_prompt" placeholder="Describe your image..."></textarea>
+                    }
+                });
+            });
 
-<div class="buttons">
-<button type="button" onclick="startVoice('image_prompt')">Speak</button>
-<button type="submit">Generate</button>
-</div>
-
-</form>
-
-{% if image %}
-
-<div class="image-box">
-
-<img src="{{ image }}?v={{ range(1,1000)|random }}">
-
-<a href="{{ image }}" download="KushVision_AI_Image.png" class="download-link">
-<button type="button" class="download-btn">Download Image</button>
-</a>
-
-</div>
-
-{% endif %}
-
-<a class="back-link" href="/dashboard/{{username}}">← Back</a>
-
-</div>
-
-</div>
-
-<script>
-
-function startVoice(id){
-if(!('webkitSpeechRecognition' in window)){
-alert("Use Chrome browser");
-return;
-}
-
-const recognition = new webkitSpeechRecognition();
-recognition.lang="en-IN";
-recognition.start();
-
-recognition.onresult=function(event){
-document.getElementById(id).value =
-event.results[0][0].transcript;
-};
-
-}
-
-</script>
-
-<audio id="clickSound" preload="auto">
-<source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
-</audio>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function(){
-
-const sound = document.getElementById("clickSound");
-
-function playClick(){
-sound.pause();
-sound.currentTime = 0;
-sound.play().catch(()=>{});
-}
-
-document.querySelectorAll("button").forEach(btn=>{
-btn.addEventListener("click",function(e){
-
-if(btn.type==="submit"){
-e.preventDefault();
-playClick();
-
-setTimeout(()=>{
-btn.closest("form").submit();
-},120);
-
-}else{
-playClick();
-}
-
-});
-});
-
-document.querySelectorAll("a:not(.download-link)").forEach(link=>{
-link.addEventListener("click",function(e){
-
-const href=this.getAttribute("href");
-
-if(!href || href.startsWith("#")) return;
-
-e.preventDefault();
-playClick();
-
-setTimeout(()=>{
-window.location.href=href;
-},120);
-
-});
-
-});
-
-});
-
-</script>
-
+            document.querySelectorAll("a:not(.download-link)").forEach(link => {
+                link.addEventListener("click", function (e) {
+                    const href = this.getAttribute("href");
+                    if (!href || href.startsWith("#")) return;
+                    e.preventDefault();
+                    playClick();
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 120);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
