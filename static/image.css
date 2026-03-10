@@ -96,29 +96,44 @@ text-decoration:none;
     transform: scale(0.95);
 }
 
+/* Mobile responsive fix */
 @media (max-width:768px){
 
 body{
-margin-top:40px;
+margin-top:40px !important;
 padding:10px;
 }
 
 .box{
-width:92%;
-padding:25px;
+width:95% !important;
+max-width:95% !important;
+padding:25px !important;
+}
+
+.container{
+position:relative !important;
+top:auto !important;
+left:auto !important;
+transform:none !important;
+width:100% !important;
 }
 
 h1{
-font-size:28px;
+font-size:28px !important;
+}
+
+button{
+width:100% !important;
+margin-top:10px;
 }
 
 textarea{
 height:100px;
 }
 
-button{
-width:100%;
-margin-top:10px;
+img{
+max-width:100%;
+height:auto;
 }
 
 }
