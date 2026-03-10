@@ -12,8 +12,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
+    justify-content: flex-start;
+    padding: 40px 20px;
 }
 
 h1 {
@@ -22,6 +22,7 @@ h1 {
     margin-bottom: 20px;
     text-shadow: 0 0 20px #6366F1;
     text-align: center;
+    width: 100%;
 }
 
 .box {
@@ -94,6 +95,8 @@ button:hover {
     color: #a78bfa;
     text-decoration: none;
     font-size: clamp(13px, 3vw, 15px);
+    text-align: center;
+    width: 100%;
 }
 
 .download-btn {
