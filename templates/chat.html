@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
     <title>KushVision Chat</title>
 </head>
@@ -11,10 +10,8 @@
         <form method="POST">
             <textarea id="user_input" name="user_input" placeholder="Ask anything..."></textarea>
             <br>
-            <div class="btn-row">
-                <button type="button" onclick="startVoice('user_input')">Speak</button>
-                <button type="submit">Ask</button>
-            </div>
+            <button type="button" onclick="startVoice('user_input')">Speak</button>
+            <button type="submit">Ask</button>
         </form>
 
         {% if reply %}
@@ -27,45 +24,87 @@
     </div>
 
     <script>
+        // Voice Input
         function startVoice(id) {
-            if (!('webkitSpeechRecognition' in window)) { alert("Use Chrome"); return; }
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Use Chrome browser");
+                return;
+            }
             const recognition = new webkitSpeechRecognition();
             recognition.lang = "en-IN";
             recognition.start();
             recognition.onresult = function(event) {
-                document.getElementById(id).value = event.results[0][0].transcript;
+                document.getElementById(id).value =
+                    event.results[0][0].transcript;
             };
         }
+
+        // Speak Function
         function speakText(text) {
             if (!text) return;
             const speech = new SpeechSynthesisUtterance(text);
+            speech.rate = 1;
+            speech.pitch = 1;
+            speech.volume = 1;
             window.speechSynthesis.cancel();
             window.speechSynthesis.speak(speech);
         }
-        window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
+
+        // Stop speech when page closes
+        window.onbeforeunload = function() {
+            window.speechSynthesis.cancel();
+        };
+
+        // Stop speech manually
+        function stopVoice() {
+            window.speechSynthesis.cancel();
+        }
     </script>
 
-    {% if reply %}<script>speakText(`{{ reply }}`);</script>{% endif %}
+    {% if reply %}
+    <script>
+        speakText(`{{ reply }}`);
+    </script>
+    {% endif %}
 
     <audio id="clickSound" preload="auto">
         <source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
     </audio>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const sound = document.getElementById("clickSound");
-            function playClick() { sound.pause(); sound.currentTime = 0; sound.play().catch(()=>{}); }
+            function playClick() {
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            }
+
+            // Buttons
             document.querySelectorAll("button").forEach(btn => {
                 btn.addEventListener("click", function(e) {
-                    if (btn.type === "submit") { e.preventDefault(); playClick(); setTimeout(() => { btn.closest("form").submit(); }, 120); }
-                    else { playClick(); }
+                    if (btn.type === "submit") {
+                        e.preventDefault();
+                        playClick();
+                        setTimeout(() => {
+                            btn.closest("form").submit();
+                        }, 120);
+                    } else {
+                        playClick();
+                    }
                 });
             });
+
+            // Links
             document.querySelectorAll("a").forEach(link => {
                 link.addEventListener("click", function(e) {
                     const href = this.getAttribute("href");
                     if (!href || href.startsWith("#")) return;
-                    e.preventDefault(); playClick();
-                    setTimeout(() => { window.location.href = href; }, 120);
+                    e.preventDefault();
+                    playClick();
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 120);
                 });
             });
         });
