@@ -21,7 +21,7 @@
 
             {% if reply %}
             <div class="chat">
-                <b>AI:</b> {{ reply }}
+                <b>AI:</b> {{ reply | safe }}
             </div>
             {% endif %}
 
@@ -63,7 +63,7 @@
 
     {% if reply %}
     <script>
-        speakText(`{{ reply }}`);
+        speakText({{ plain_reply | tojson}});
     </script>
     {% endif %}
 

@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
-from models.llm import normal_chat
+from models.llm import chat as normal_chat
 from models.rag import process_file, ask_file
 from models.image import generate_image
+import markdown
 
 app = Flask(__name__)
 
@@ -21,16 +22,18 @@ def dashboard(username):
 @app.route("/chat/<username>", methods=["GET","POST"])
 def chat_page(username):
     reply = ""
+    plain_reply = ""  # clean text for speech (no HTML, no markdown)
 
     if request.form.get("user_input"):
         user_input = request.form.get("user_input")
-        answer = normal_chat(user_input)
+        plain_reply = normal_chat(user_input)         # raw text → for speech
+        reply = markdown.markdown(plain_reply)        # HTML → for display
 
-        chat_history.append({"q": user_input, "a": answer})
-        reply = answer
+        chat_history.append({"q": user_input, "a": reply})
 
     return render_template("chat.html",
                            reply=reply,
+                           plain_reply=plain_reply,
                            history=chat_history,
                            username=username)
 
@@ -41,7 +44,7 @@ def rag_page(username):
     if request.files.get("file"):
         file = request.files.get("file")
         if file.filename != "":
-            result=process_file(file)
+            result = process_file(file)
             reply = result
 
     if request.form.get("user_input"):
@@ -66,4 +69,4 @@ def image_page(username):
                            username=username)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(debug=True)

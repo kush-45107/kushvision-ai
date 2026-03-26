@@ -1,5 +1,6 @@
 dotenv
 flask
+markdown
 groq
 langchain
 langchain-community
