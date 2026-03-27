@@ -22,14 +22,14 @@ def generate_image(prompt, style="realistic"):
             print("ERROR:", response.text)
             return None
 
-        # Purani images delete karo (cleanup)
+        # Old images delete
         for old_file in glob.glob("static/generated_*.png"):
             try:
                 os.remove(old_file)
             except:
                 pass
 
-        # Unique filename har user ke liye
+        # Unique filename for every user
         unique_name = f"generated_{uuid.uuid4().hex[:8]}.png"
         image_path = os.path.join("static", unique_name)
 

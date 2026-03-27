@@ -84,7 +84,7 @@ tools = [get_creator_info, get_about_info, realtime_search]
 llm_with_tools = llm.bind_tools(tools)
 
 class AgentState(TypedDict):
-    # add_messages handles appending — this IS the memory
+    # add_messages handles appending - this is memory
     messages: Annotated[Sequence[BaseMessage], add_messages]
 
 SYSTEM_PROMPT = SYSTEM_PROMPT = """You are KushVision AI, an advanced AI assistant created by Kushagra Srivastawa.
@@ -111,7 +111,6 @@ def agent_node(state: AgentState) -> AgentState:
     """Main agent node — calls LLM with tools."""
     messages = state["messages"]
 
-    # Prepend system message if not already there
     if not messages or not isinstance(messages[0], SystemMessage):
         messages = [SystemMessage(content=SYSTEM_PROMPT)] + list(messages)
 
@@ -129,20 +128,15 @@ def should_continue(state: AgentState) -> str:
 tool_node = ToolNode(tools)
 
 graph_builder = StateGraph(AgentState)
-
 graph_builder.add_node("agent", agent_node)
 graph_builder.add_node("tools", tool_node)
 
 graph_builder.add_edge(START, "agent")
 graph_builder.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
-graph_builder.add_edge("tools", "agent")  # after tools, go back to agent
+graph_builder.add_edge("tools", "agent")
 
 agent = graph_builder.compile()
-
-# In-memory conversation store (per session)
-# For multi-user: use a dict keyed by session/user id
 conversation_history: list[BaseMessage] = []
-
 
 def chat(user_input: str) -> str:
     """
@@ -166,7 +160,6 @@ def chat(user_input: str) -> str:
             return msg.content
 
     return "Sorry, I couldn't generate a response."
-
 
 def reset_memory():
     """Clear conversation history to start a fresh session."""

@@ -22,12 +22,12 @@ def dashboard(username):
 @app.route("/chat/<username>", methods=["GET","POST"])
 def chat_page(username):
     reply = ""
-    plain_reply = ""  # clean text for speech (no HTML, no markdown)
+    plain_reply = ""
 
     if request.form.get("user_input"):
         user_input = request.form.get("user_input")
-        plain_reply = normal_chat(user_input)         # raw text → for speech
-        reply = markdown.markdown(plain_reply)        # HTML → for display
+        plain_reply = normal_chat(user_input)
+        reply = markdown.markdown(plain_reply)
 
         chat_history.append({"q": user_input, "a": reply})
 
