@@ -62,7 +62,8 @@ def image_page(username):
 
     if request.form.get("image_prompt"):
         prompt = request.form.get("image_prompt")
-        img_path = generate_image(prompt)
+        style=request.form.get("style")
+        img_path = generate_image(prompt,style)
 
     return render_template("image.html",
                            image=img_path,

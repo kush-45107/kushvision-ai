@@ -1,31 +1,48 @@
-import os
 import requests
+import os
+import uuid
+import glob
 from dotenv import load_dotenv
-
 load_dotenv()
 
 HF_TOKEN = os.getenv("HF_TOKEN")
+API_URL = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
 
-API_URL = "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-xl-base-1.0"
-headers = {"Authorization": f"Bearer {HF_TOKEN}"}
+def generate_image(prompt, style="realistic"):
+    styled_prompt = f"{prompt}, {style} style, high quality, detailed"
+    print("PROMPT:", styled_prompt)
 
-def generate_image(prompt):
-    print("PROMPT:", prompt)
+    headers = {"Authorization": f"Bearer {HF_TOKEN}"}
 
-    payload = {"inputs": prompt}
+    try:
+        response = requests.post(API_URL, headers=headers, json={"inputs": styled_prompt}, timeout=60)
+        print("STATUS:", response.status_code)
 
-    response = requests.post(API_URL, headers=headers, json=payload)
+        if response.status_code != 200:
+            print("ERROR:", response.text)
+            return None
 
-    print("STATUS:", response.status_code)
+        # Purani images delete karo (cleanup)
+        for old_file in glob.glob("static/generated_*.png"):
+            try:
+                os.remove(old_file)
+            except:
+                pass
 
-    if response.status_code != 200:
-        print("ERROR:", response.text)
+        # Unique filename har user ke liye
+        unique_name = f"generated_{uuid.uuid4().hex[:8]}.png"
+        image_path = os.path.join("static", unique_name)
+
+        with open(image_path, "wb") as f:
+            f.write(response.content)
+
+        print("IMAGE SAVED:", unique_name)
+        return f"/static/{unique_name}"
+
+    except requests.exceptions.Timeout:
+        print("ERROR: Request timed out")
         return None
 
-    image_path = "static/generated.png"
-
-    with open(image_path, "wb") as f:
-        f.write(response.content)
-
-    print("IMAGE SAVED")
-    return "/static/generated.png"
+    except Exception as e:
+        print("ERROR:", str(e))
+        return None

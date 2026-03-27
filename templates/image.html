@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KushVision Image AI</title>
+    <title>KushVision AI Image</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='image.css') }}">
 </head>
 
@@ -12,6 +12,16 @@
         <div class="box">
             <form method="POST">
                 <textarea id="image_prompt" name="image_prompt" placeholder="Describe your image..."></textarea>
+
+                <select name="style" style="margin-top:10px; padding:8px; border-radius:6px;">
+                    <option value="realistic">Realistic</option>
+                    <option value="anime">Anime</option>
+                    <option value="cinematic">Cinematic</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="cartoon">Cartoon</option>
+                    <option value="cyberpunk">Cyberpunk</option>
+                </select>
+
                 <div class="buttons">
                     <button type="button" onclick="startVoice('image_prompt')">Speak</button>
                     <button type="submit">Generate</button>
@@ -20,7 +30,7 @@
 
             {% if image %}
             <div class="image-box">
-                <img src="{{ image }}?v={{ range(1,1000)|random }}">
+                <img src="{{ image }}">
                 <a href="{{ image }}" download="KushVision_AI_Image.png" class="download-link">
                     <button type="button" class="download-btn">
                         Download Image
