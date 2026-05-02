@@ -93,7 +93,6 @@ KushVision AI is a full-stack AI-powered assistant that brings multiple intellig
 ---
 
 ## ☁️ Deployment
-## ☁️ Deployment
 
     AWS EC2 (t3.micro)
         └── Nginx (Reverse Proxy + SSL)
