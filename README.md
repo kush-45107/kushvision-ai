@@ -24,20 +24,21 @@ KushVision AI is a full-stack AI-powered assistant that brings multiple intellig
 ---
 
 ## 🏗️ Architecture
-User Input (Text / Voice)
-↓
-Frontend (HTML + CSS + Web Speech API)
-↓
-Flask Backend (AWS EC2)
-↓
-┌─────────────────────────────────┐
-│  LLM    → Groq LLaMA 3         │
-│  RAG    → FAISS + Sentence Trans│
-│  Search → SerpAPI               │
-│  Image  → FLUX.1-schnell (HF)   │
-└─────────────────────────────────┘
-↓
-Response displayed / spoken to User
+
+    User Input (Text / Voice)
+            ↓
+    Frontend (HTML + CSS + Web Speech API)
+            ↓
+    Flask Backend (AWS EC2)
+            ↓
+    ┌─────────────────────────────────────┐
+    │  LLM    → Groq LLaMA 3             │
+    │  RAG    → FAISS + Sentence Trans.  │
+    │  Search → SerpAPI                  │
+    │  Image  → FLUX.1-schnell (HF)      │
+    └─────────────────────────────────────┘
+            ↓
+    Response displayed / spoken to User
 
 ---
 
@@ -55,23 +56,23 @@ Response displayed / spoken to User
 ---
 
 ## 📁 Project Structure
-kushvision-ai/
-├── models/
-│   ├── llm.py          ← Groq LLM chat logic
-│   ├── rag.py          ← RAG pipeline (FAISS + LangChain)
-│   ├── image.py        ← Image generation logic
-│   └── realtime.py     ← Real-time web search
-├── static/
-│   ├── welcome.png     ← Background image
-│   ├── chat.css / rag.css / image.css
-│   └── click.mp3       ← UI sound effect
-├── templates/
-│   ├── welcome.html / dashboard.html
-│   ├── chat.html / rag.html / image.html
-├── app.py              ← Flask main app
-├── requirements.txt
-└── README.md
 
+    kushvision-ai/
+    ├── models/
+    │   ├── llm.py          ← Groq LLM chat logic
+    │   ├── rag.py          ← RAG pipeline
+    │   ├── image.py        ← Image generation
+    │   └── realtime.py     ← Real-time web search
+    ├── static/
+    │   ├── welcome.png
+    │   ├── chat.css / rag.css / image.css
+    │   └── click.mp3
+    ├── templates/
+    │   ├── welcome.html / dashboard.html
+    │   └── chat.html / rag.html / image.html
+    ├── app.py
+    ├── requirements.txt
+    └── README.md
 ---
 
 ## 🚀 Tech Stack
@@ -92,10 +93,13 @@ kushvision-ai/
 ---
 
 ## ☁️ Deployment
-AWS EC2 (t3.micro)
-└── Nginx (Reverse Proxy + SSL)
-└── Gunicorn (WSGI Server)
-└── Flask App (Port 5000)
+## ☁️ Deployment
+
+    AWS EC2 (t3.micro)
+        └── Nginx (Reverse Proxy + SSL)
+            └── Gunicorn (WSGI Server)
+                └── Flask App (Port 5000)
+                
 - ✅ SSL via Let's Encrypt (Certbot) — HTTPS enabled
 - ✅ Domain — `kushvision.ddns.net`
 - ✅ Live URL — https://kushvision.ddns.net
